@@ -10,13 +10,19 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - stats-db
+      stats-db:
+        condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statdb
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
     networks:
       - ewm-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   stats-db:
     image: postgres:16.1
@@ -27,21 +33,65 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
       - POSTGRES_DB=statdb
+    volumes:
+      - stats-data:/var/lib/postgresql/data
+    networks:
+      - ewm-network
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
       interval: 5s
       retries: 10
+
+  ewm-service:
+    build:
+      context: ewm-main-service
+      dockerfile: Dockerfile
+    image: ewm-main-service
+    container_name: ewm-main-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      ewm-db:
+        condition: service_healthy
+      stats-server:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/maindb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - STAT_SERVICE_URL=http://stats-server:9090
     networks:
       - ewm-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
-#  ewm-service:
-#    ports:
-#      - "8080:8080"
-
-#  ewm-db:
-#    image: postgres:16.1
+  ewm-db:
+    image: postgres:16.1
+    container_name: main-db
+    ports:
+      - "5454:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=maindb
+    volumes:
+      - main-data:/var/lib/postgresql/data
+    networks:
+      - ewm-network
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
 
 networks:
   ewm-network:
     driver: bridge
+
+volumes:
+  stats-data:
+  main-data:
