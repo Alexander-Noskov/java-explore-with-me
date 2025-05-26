@@ -5,4 +5,8 @@ CREATE TABLE IF NOT EXISTS users
     name  VARCHAR(256)
 );
 
-
+CREATE TABLE IF NOT EXISTS categories
+(
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(64) UNIQUE
+);

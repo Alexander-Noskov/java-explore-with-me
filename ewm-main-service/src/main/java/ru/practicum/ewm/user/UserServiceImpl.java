@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.exception.NotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,7 +17,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity get(Long id) {
+    public UserEntity getById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with id=" + id + " was not found"));
     }
@@ -29,8 +28,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
-        get(id);
+    public void deleteById(Long id) {
+        getById(id);
         userRepository.deleteById(id);
     }
 }

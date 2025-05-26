@@ -8,12 +8,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    @Query("SELECT u " +
-           "FROM UserEntity u " +
-           "WHERE (:ids IS NULL OR u.id IN :ids) " +
-           "ORDER BY u.id " +
-           "LIMIT :size " +
-           "OFFSET :from")
+    @Query("select u from UserEntity u where (:ids is null or u.id in :ids) order by u.id limit :size offset :from")
     List<UserEntity> getUsersByParam(
             @Param("ids") List<Long> ids,
             @Param("from") Integer from,
