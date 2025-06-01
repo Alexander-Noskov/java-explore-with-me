@@ -26,3 +26,6 @@ spring:
 
 stat-server:
   url: ${STAT_SERVICE_URL:http://localhost:9090}
+
+service:
+  name: ewm-main-service

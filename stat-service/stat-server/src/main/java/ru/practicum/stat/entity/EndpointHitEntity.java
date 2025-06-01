@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -30,5 +30,5 @@ public class EndpointHitEntity {
     private String ip;
 
     @Column(name = "timestamp", nullable = false)
-    private Timestamp timestamp;
+    private LocalDateTime timestamp;
 }

@@ -1,7 +1,5 @@
 package ru.practicum.ewm.category;
 
-import ru.practicum.ewm.user.UserEntity;
-
 import java.util.List;
 
 public interface CategoryService {

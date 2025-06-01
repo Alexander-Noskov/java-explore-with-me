@@ -24,6 +24,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleInternalError(final ValidException e) {
+        log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
+        return new ErrorDto(400, e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto handleInternalError(final RuntimeException e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());

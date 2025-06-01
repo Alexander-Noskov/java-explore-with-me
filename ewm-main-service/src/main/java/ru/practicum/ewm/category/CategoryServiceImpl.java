@@ -18,7 +18,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteById(Long id) {
-        // С категорией не должны быть связаны события
         getById(id);
         categoryRepository.deleteById(id);
     }
