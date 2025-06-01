@@ -93,7 +93,7 @@ public class EventServiceImpl implements EventService {
     public List<EventFullDto> getEventsPyParam(List<Long> users, List<EventState> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         List<EventEntity> entities = eventRepository.findAllByParam(users, states, categories, rangeStart, rangeEnd, pageable);
-        return entities.stream().map(this::MapToFullDtoAndSetRequests).toList();
+        return entities.stream().map(this::mapToFullDtoAndSetRequests).toList();
     }
 
     @Override
@@ -209,7 +209,7 @@ public class EventServiceImpl implements EventService {
 
         statRestClient.addHit(new EndpointHitDto(serviceName, requestUri, remoteAddr, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
 
-        return setViewsInFullDto(MapToFullDtoAndSetRequests(event), event.getCreatedOn().truncatedTo(ChronoUnit.SECONDS), requestUri);
+        return setViewsInFullDto(mapToFullDtoAndSetRequests(event), event.getCreatedOn().truncatedTo(ChronoUnit.SECONDS), requestUri);
     }
 
     @Override
@@ -220,7 +220,7 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from / size, size);
         List<EventEntity> events = eventRepository.findAllWithRequestsByParam(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, RequestStatus.CONFIRMED, pageable);
         List<EventShortDto> shortEvents = events.stream()
-                .map(this::MapToShortDtoAndSetRequests)
+                .map(this::mapToShortDtoAndSetRequests)
                 .toList();
         LocalDateTime start = events.stream()
                 .map(EventEntity::getCreatedOn)
@@ -239,7 +239,7 @@ public class EventServiceImpl implements EventService {
         return eventsWithRequestsAndViews;
     }
 
-    private EventFullDto MapToFullDtoAndSetRequests(EventEntity event) {
+    private EventFullDto mapToFullDtoAndSetRequests(EventEntity event) {
         EventFullDto dto = eventMapper.toEventFullDto(event);
         if (event.getRequests() != null) {
             dto.setConfirmedRequests(event.getRequests().stream()
@@ -249,7 +249,7 @@ public class EventServiceImpl implements EventService {
         return dto;
     }
 
-    private EventShortDto MapToShortDtoAndSetRequests(EventEntity event) {
+    private EventShortDto mapToShortDtoAndSetRequests(EventEntity event) {
         EventShortDto dto = eventMapper.toEventShortDto(event);
         if (event.getRequests() != null) {
             dto.setConfirmedRequests(event.getRequests().stream()
@@ -282,7 +282,7 @@ public class EventServiceImpl implements EventService {
         if (views.getStatusCode().is2xxSuccessful()) {
             List<ViewStatsDto> viewStats = views.getBody();
             if (viewStats != null && !viewStats.isEmpty()) {
-                Map<Long, Long> IdHits = viewStats.stream()
+                Map<Long, Long> idHits = viewStats.stream()
                         .filter(dto -> dto.getUri() != null)
                         .collect(Collectors.toMap(
                                 dto -> extractIdFromUri(dto.getUri()),
@@ -290,7 +290,7 @@ public class EventServiceImpl implements EventService {
                                 (existing, replacement) -> existing
                         ));
                 return events.stream()
-                        .peek(e -> e.setViews(Optional.ofNullable(IdHits.get(e.getId())).orElse(0L)))
+                        .peek(e -> e.setViews(Optional.ofNullable(idHits.get(e.getId())).orElse(0L)))
                         .toList();
             }
             return events.stream()

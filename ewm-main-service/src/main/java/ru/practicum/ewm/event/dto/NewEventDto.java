@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NewEventDto {
     @NotBlank
-        @Size(min = 3, max = 120)
-        private String title;
+    @Size(min = 3, max = 120)
+    private String title;
 
     @NotBlank
     @Size(min = 20, max = 2000)

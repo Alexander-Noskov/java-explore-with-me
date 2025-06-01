@@ -7,10 +7,7 @@ import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.dto.Location;
 import ru.practicum.ewm.event.dto.NewEventDto;
-import ru.practicum.ewm.request.RequestStatus;
 import ru.practicum.ewm.user.UserMapper;
-
-import java.sql.Timestamp;
 
 @Component
 @RequiredArgsConstructor
