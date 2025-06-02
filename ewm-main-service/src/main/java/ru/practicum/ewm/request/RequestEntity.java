@@ -22,6 +22,13 @@ public class RequestEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RequestStatus status;
+
+    @Column(name = "created", nullable = false)
+    private Timestamp created;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "event_id", nullable = false)
     private EventEntity event;
@@ -29,11 +36,4 @@ public class RequestEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "requester_id", nullable = false)
     private UserEntity requester;
-
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RequestStatus status;
-
-    @Column(name = "created", nullable = false)
-    private Timestamp created;
 }

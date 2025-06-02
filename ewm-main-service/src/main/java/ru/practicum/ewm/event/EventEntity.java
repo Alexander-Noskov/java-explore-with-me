@@ -27,20 +27,6 @@ public class EventEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "initiator_id", nullable = false)
-    private UserEntity initiator;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
-    private CategoryEntity category;
-
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
-    private List<RequestEntity> requests;
-
-    @ManyToMany(mappedBy = "events")
-    private List<CompilationEntity> compilations = new ArrayList<>();
-
     @Column(name = "title", nullable = false, length = 128)
     private String title;
 
@@ -77,4 +63,18 @@ public class EventEntity {
     @Column(name = "state", nullable = false)
     @Enumerated(EnumType.STRING)
     private EventState state;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "initiator_id", nullable = false)
+    private UserEntity initiator;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity category;
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    private List<RequestEntity> requests;
+
+    @ManyToMany(mappedBy = "events")
+    private List<CompilationEntity> compilations = new ArrayList<>();
 }

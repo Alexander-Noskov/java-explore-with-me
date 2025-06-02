@@ -9,7 +9,7 @@ public interface CategoryService {
 
     CategoryEntity getById(Long id);
 
-    CategoryEntity update(Long id, CategoryEntity category);
+    CategoryEntity update(Long id, String name);
 
     List<CategoryEntity> getCategories(Integer from, Integer size);
 }

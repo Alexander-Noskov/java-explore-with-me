@@ -11,6 +11,7 @@ import ru.practicum.ewm.category.CategoryMapper;
 import ru.practicum.ewm.category.CategoryService;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.dto.NewCategoryDto;
+import ru.practicum.ewm.category.dto.UpdateCategoryDto;
 
 @Slf4j
 @RestController
@@ -37,8 +38,8 @@ public class AdminCategoryRestController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto updateCategory(@PathVariable @NotNull Long id, @RequestBody @Valid NewCategoryDto dto) {
+    public CategoryDto updateCategory(@PathVariable @NotNull Long id, @RequestBody @Valid UpdateCategoryDto dto) {
         log.info("Updating category id: {}, dto: {}", id, dto);
-        return categoryMapper.toCategoryDto(categoryService.update(id, categoryMapper.toCategoryEntity(dto)));
+        return categoryMapper.toCategoryDto(categoryService.update(id, dto.getName()));
     }
 }

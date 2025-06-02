@@ -6,8 +6,6 @@ import ru.practicum.ewm.compilation.dto.CompilationDto;
 import ru.practicum.ewm.compilation.dto.NewCompilationDto;
 import ru.practicum.ewm.event.EventMapper;
 
-import java.util.ArrayList;
-
 @Component
 @RequiredArgsConstructor
 public final class CompilationMapper {
@@ -32,10 +30,8 @@ public final class CompilationMapper {
                 .pinned(entity.getPinned())
                 .title(entity.getTitle())
                 .build();
-        if (entity.getEvents() != null && !entity.getEvents().isEmpty()) {
+        if (entity.getEvents() != null) {
             dto.setEvents(entity.getEvents().stream().map(eventMapper::toEventShortDto).toList());
-        } else {
-            dto.setEvents(new ArrayList<>());
         }
         return dto;
     }

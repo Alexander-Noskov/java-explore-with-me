@@ -101,7 +101,6 @@ public class RequestServiceImpl implements RequestService {
                 })
                 .toList();
 
-        requestRepository.saveAll(requestsForUpdate);
         if (isLimit(event)) {
             List<RequestEntity> reqs = event.getRequests().stream()
                     .filter(req -> !requestIds.contains(req.getId()))
