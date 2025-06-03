@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.category.CategoryEntity;
 import ru.practicum.ewm.category.CategoryService;
+import ru.practicum.ewm.comment.CommentEntity;
+import ru.practicum.ewm.comment.CommentMapper;
+import ru.practicum.ewm.comment.CommentRepository;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
@@ -33,8 +36,10 @@ import java.util.stream.Collectors;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryService categoryService;
+    private final CommentRepository commentRepository;
     private final UserService userService;
     private final EventMapper eventMapper;
+    private final CommentMapper commentMapper;
     private final StatRestClient statRestClient;
 
     @Value("${service.name}")
@@ -63,9 +68,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto getEventFullDtoById(Long initiatorId, Long eventId) {
-        return eventMapper.toEventFullDto(eventRepository.findAllByInitiatorIdAndId(initiatorId, eventId)
-                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found")));
+    public EventFullDto getEventFullDtoById(Long initiatorId, Long eventId, Integer commentFrom, Integer commentSize) {
+        EventEntity eventEntity = eventRepository.findAllByInitiatorIdAndId(initiatorId, eventId)
+                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
+
+        EventFullDto dto = eventMapper.toEventFullDto(eventEntity);
+
+        return setComments(dto, commentFrom, commentSize);
     }
 
     @Override
@@ -86,6 +95,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventEntity getEventById(Long eventId) {
         return eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
+    }
+
+    @Override
+    public EventEntity getEventByIdAndState(Long eventId, EventState state) {
+        return eventRepository.findByIdAndState(eventId, state)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
     }
 
@@ -203,13 +218,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto getPublicEventById(Long eventId, String remoteAddr, String requestUri) {
-        EventEntity event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
-                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
+    public EventFullDto getPublicEventById(Long eventId, String remoteAddr, String requestUri, Integer commentFrom, Integer commentSize) {
+        EventEntity event = getEventByIdAndState(eventId, EventState.PUBLISHED);
 
         statRestClient.addHit(new EndpointHitDto(serviceName, requestUri, remoteAddr, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
 
-        return setViewsInFullDto(mapToFullDtoAndSetRequests(event), event.getCreatedOn().truncatedTo(ChronoUnit.SECONDS), requestUri);
+        EventFullDto dto = setViewsInFullDto(mapToFullDtoAndSetRequests(event), event.getCreatedOn().truncatedTo(ChronoUnit.SECONDS), requestUri);
+
+        return setComments(dto, commentFrom, commentSize);
     }
 
     @Override
@@ -237,6 +253,12 @@ public class EventServiceImpl implements EventService {
                     .toList();
         }
         return eventsWithRequestsAndViews;
+    }
+
+    private EventFullDto setComments(EventFullDto dto, Integer from, Integer size) {
+        List<CommentEntity> comments = commentRepository.findAllByEventId(dto.getId(), from, size);
+        dto.setComments(comments.stream().map(commentMapper::toCommentDto).toList());
+        return dto;
     }
 
     private EventFullDto mapToFullDtoAndSetRequests(EventEntity event) {

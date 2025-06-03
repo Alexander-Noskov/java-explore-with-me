@@ -28,9 +28,11 @@ public class PublicEventRestController {
 
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEvent(@PathVariable @NotNull Long eventId, HttpServletRequest request) {
+    public EventFullDto getEvent(@PathVariable @NotNull Long eventId, HttpServletRequest request,
+                                 @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer commentFrom,
+                                 @RequestParam(required = false, defaultValue = "10") @Positive Integer commentSize) {
         log.info("Getting event id: {}, request: {}", eventId, request);
-        return eventService.getPublicEventById(eventId, request.getRemoteAddr(), request.getRequestURI());
+        return eventService.getPublicEventById(eventId, request.getRemoteAddr(), request.getRequestURI(), commentFrom, commentSize);
     }
 
     @GetMapping

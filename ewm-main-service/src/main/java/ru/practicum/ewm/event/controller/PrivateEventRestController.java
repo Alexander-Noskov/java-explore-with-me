@@ -50,9 +50,12 @@ public class PrivateEventRestController {
 
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEventById(@PathVariable @NotNull Long userId, @PathVariable @NotNull Long eventId) {
+    public EventFullDto getEventById(@PathVariable @NotNull Long userId,
+                                     @PathVariable @NotNull Long eventId,
+                                     @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer commentFrom,
+                                     @RequestParam(required = false, defaultValue = "10") @Positive Integer commentSize) {
         log.info("Getting event by id: {}, userId: {}", eventId, userId);
-        return eventService.getEventFullDtoById(userId, eventId);
+        return eventService.getEventFullDtoById(userId, eventId, commentFrom, commentSize);
     }
 
     @PatchMapping("/{eventId}")

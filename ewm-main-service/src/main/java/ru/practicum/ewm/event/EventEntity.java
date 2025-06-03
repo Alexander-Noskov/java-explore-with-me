@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.category.CategoryEntity;
+import ru.practicum.ewm.comment.CommentEntity;
 import ru.practicum.ewm.compilation.CompilationEntity;
 import ru.practicum.ewm.request.RequestEntity;
 import ru.practicum.ewm.user.UserEntity;
@@ -64,17 +65,20 @@ public class EventEntity {
     @Enumerated(EnumType.STRING)
     private EventState state;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", nullable = false)
     private UserEntity initiator;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<RequestEntity> requests;
 
     @ManyToMany(mappedBy = "events")
     private List<CompilationEntity> compilations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    private List<CommentEntity> comments;
 }
