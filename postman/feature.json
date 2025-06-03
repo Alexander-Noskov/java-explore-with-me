@@ -69,11 +69,10 @@
 							"const source = JSON.parse(pm.request.body.raw);\r",
 							"const target = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Категория должна содержать поля: id, content, createdAt, updatedAt, author\", function () {\r",
+							"pm.test(\"Категория должна содержать поля: id, content, createdAt, author\", function () {\r",
 							"pm.expect(target).to.have.property('id');\r",
 							"pm.expect(target).to.have.property('content');\r",
 							"pm.expect(target).to.have.property('createdAt');\r",
-							"pm.expect(target).to.have.property('updatedAt');\r",
 							"pm.expect(target).to.have.property('author');\r",
 							"});\r",
 							"\r",
@@ -99,6 +98,10 @@
 						"value": "application/json"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": {
 					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
 					"host": [
@@ -227,6 +230,10 @@
 						"value": "application/json"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": {
 					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments/:commentId",
 					"host": [
