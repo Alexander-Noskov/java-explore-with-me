@@ -59,3 +59,15 @@ CREATE TABLE IF NOT EXISTS requests
     CONSTRAINT fk_requests_requester FOREIGN KEY (requester_id) REFERENCES users (id) ON DELETE SET NULL,
     CONSTRAINT uq_request_event_requester UNIQUE (event_id, requester_id)
 );
+
+CREATE TABLE IF NOT EXISTS comments
+(
+    id        SERIAL PRIMARY KEY,
+    event_id  BIGINT        NOT NULL,
+    author_id BIGINT        NOT NULL,
+    content   VARCHAR(8192) NOT NULL,
+    created   TIMESTAMP     NOT NULL,
+    updated   TIMESTAMP,
+    CONSTRAINT fk_comments_event FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
+    CONSTRAINT fk_comments_author FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE
+);

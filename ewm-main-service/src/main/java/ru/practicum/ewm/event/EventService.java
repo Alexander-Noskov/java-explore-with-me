@@ -12,17 +12,19 @@ public interface EventService {
 
     EventEntity getEventById(Long eventId);
 
+    EventEntity getEventByIdAndState(Long eventId, EventState state);
+
     EventEntity getByIdAndInitiatorId(Long eventId, Long initiatorId);
 
     List<EventShortDto> getEventsByInitiatorIdAndParam(Long initiatorId, Integer from, Integer size);
 
-    EventFullDto getEventFullDtoById(Long initiatorId, Long eventId);
+    EventFullDto getEventFullDtoById(Long initiatorId, Long eventId, Integer commentFrom, Integer commentSize);
 
     List<EventFullDto> getEventsPyParam(List<Long> users, List<EventState> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
     EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequestDto dto);
 
-    EventFullDto getPublicEventById(Long eventId, String remoteAddr, String requestUri);
+    EventFullDto getPublicEventById(Long eventId, String remoteAddr, String requestUri, Integer commentFrom, Integer commentSize);
 
     List<EventShortDto> getPublicEvents(String remoteAddr, String requestURI, String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, SortValue sort, Integer from, Integer size);
 
