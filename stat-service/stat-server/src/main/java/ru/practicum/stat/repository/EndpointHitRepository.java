@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 import ru.practicum.stat.entity.EndpointHitEntity;
 import ru.practicum.stat.entity.ViewStatsProjection;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EndpointHitRepository extends JpaRepository<EndpointHitEntity, Long> {
@@ -17,8 +17,8 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHitEntity, 
            "GROUP BY e.app, e.uri " +
            "ORDER BY hits DESC")
     List<ViewStatsProjection> findStatsProjection(
-            @Param("start") Timestamp start,
-            @Param("end") Timestamp end,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
             @Param("uris") List<String> uris,
             @Param("unique") Boolean unique
     );

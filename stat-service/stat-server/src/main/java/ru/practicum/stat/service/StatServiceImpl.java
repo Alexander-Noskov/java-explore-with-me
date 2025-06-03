@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.stat.entity.EndpointHitEntity;
 import ru.practicum.stat.entity.ViewStatsProjection;
+import ru.practicum.stat.exception.ValidException;
 import ru.practicum.stat.repository.EndpointHitRepository;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +22,9 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public List<ViewStatsProjection> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        return endpointHitRepository.findStatsProjection(Timestamp.valueOf(start), Timestamp.valueOf(end), uris, unique);
+        if (start.isAfter(end)) {
+            throw new ValidException("Start date cannot be after end date");
+        }
+        return endpointHitRepository.findStatsProjection(start, end, uris, unique);
     }
 }

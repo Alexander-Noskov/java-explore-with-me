@@ -6,8 +6,6 @@ import ru.practicum.stat.ViewStatsDto;
 import ru.practicum.stat.entity.EndpointHitEntity;
 import ru.practicum.stat.entity.ViewStatsProjection;
 
-import java.sql.Timestamp;
-
 @Component
 public final class EndpointHitMapper {
     public EndpointHitEntity toEntity(final EndpointHitDto dto) {
@@ -18,7 +16,7 @@ public final class EndpointHitMapper {
                 .app(dto.getApp())
                 .uri(dto.getUri())
                 .ip(dto.getIp())
-                .timestamp(Timestamp.valueOf(dto.getTimestamp()))
+                .timestamp(dto.getTimestamp())
                 .build();
     }
 
